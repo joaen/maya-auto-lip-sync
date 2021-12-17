@@ -6,8 +6,8 @@ Description: A tool used for generating automated lip sync animation on a facial
 Author: Joar Engberg 2021
 
 Installation:
-1. Add auto_lip_sync.py to your Maya scripts folder (Username\Documents\maya\*version*\scripts).
-2. Make sure you have the dependencies needed to run the tool. (Read the README or click 'Yes' when prompted to download dependecies.)
+1. Add the auto_lip_sync folder to your Maya scripts folder (Username\Documents\maya*version*\scripts).
+2. Download the dependencies needed to run this tool (Download the dependencies from: https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0 or read the Dependencies section further down).
 3. To start the auto lipsync tool in Maya simply execute the following lines of code in the script editor or add them as a shelf button:
 
 import auto_lip_sync
@@ -26,13 +26,13 @@ from shiboken2 import wrapInstance
 from collections import OrderedDict 
 from PySide2 import QtCore, QtGui, QtWidgets
 
-# Import Textgrid. If the module doesn't exist let the user decide if they want to download dependencies zip.
+# Import Textgrid. If the module doesn't exist let the user decide if they want to download the dependencies zip.
 try:
     import textgrid
 except ImportError:
     confirm = cmds.confirmDialog(title="Missing dependencies", message="To be able to run this tool you need to download the required dependencies. Do you want to download the Depencies.zip (54 MB)?", button=["Yes","Cancel"], defaultButton="Yes", cancelButton="Cancel", dismissString="Cancel")
     if confirm == "Yes":
-        webbrowser.open_new("https://google.com")
+        webbrowser.open_new("https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0")
     else:
         pass
 
@@ -251,7 +251,7 @@ class LipSyncDialog(QtWidgets.QDialog):
         return textgrid_files[0]
 
     def open_readme(self):
-        webbrowser.open_new("https://google.com")
+        webbrowser.open_new("https://github.com/joaen/maya_auto_lip_sync/blob/main/README.md")
 
     def generate_animation(self):
         number_of_operations = 12
