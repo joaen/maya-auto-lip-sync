@@ -222,25 +222,25 @@ class LipSyncDialog(QtWidgets.QDialog):
 
     def input_sound_dialog(self):
         file_path = QtWidgets.QFileDialog.getOpenFileName(self, "Select sound clip", "", "Wav (*.wav);;All files (*.*)")
-        if file_path:
+        if file_path[0]:
             self.sound_filepath_line.setText(file_path[0])
             self.sound_clip_path = file_path[0]
 
     def save_pose_dialog(self):
         file_path = QtWidgets.QFileDialog.getSaveFileName(self, "Save pose file", self.pose_folder_path, "Pose file (*.json);;All files (*.*)")
-        if file_path:
+        if file_path[0]:
             self.save_pose(file_path[0])
             print("Saved pose: "+file_path[0])
 
     def load_pose_dialog(self):
         file_path = QtWidgets.QFileDialog.getOpenFileName(self, "Save pose file", self.pose_folder_path, "Pose file (*.json);;All files (*.*)")
-        if file_path:
+        if file_path[0]:
             self.load_pose(file_path[0])
             print("Loaded pose: "+file_path[0])
 
     def input_text_dialog(self):
         file_path = QtWidgets.QFileDialog.getOpenFileName(self, "Select dialog transcript", "", "Text (*.txt);;All files (*.*)")
-        if file_path:
+        if file_path[0]:
             self.text_filepath_line.setText(file_path[0])
             self.text_file_path = file_path[0]
 
