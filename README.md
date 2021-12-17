@@ -5,8 +5,8 @@
  ![](https://joaen.github.io/images/auto-lip-sync.gif)
 
 ## Installation:
-1. Add the ***auto_lip_sync*** folder to your Maya scripts folder (Username\Documents\maya\*version*\scripts).
-2. Download the dependencies needed to run this tool (Download the [Dependencies.zip](https://www.google.com) or read the Dependencies section further down).
+1. Add the ***auto_lip_sync*** folder or ***auto_lip_sync.py*** to your Maya scripts folder (Username\Documents\maya\*version*\scripts).
+2. Download the dependencies needed to run this tool (Download the [Dependencies.zip](https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0) or read the *Dependencies* section further down).
 3. To start the auto lipsync tool in Maya simply execute the following lines of code in the script editor or add them as a shelf button:
 
 ```python
@@ -37,7 +37,7 @@ https://www.openslr.org/resources/11/librispeech-lexicon.txt
 1. Use the *Save pose* function to create 10 separate facial poses (one for each phonome). 
 2. Load the folder where the pose files are saved and assign a unique pose to each phonomes in the dropdown boxes.
 3. Select a soundclip with a voice-line and a textfile where the voice-line is written down in english.
-4. Click *Generate animation* and wait until the process is done. (Long sound files may take couple of minutes to process)
+4. Click *Generate animation* and wait until the process is done. (The length of the audio clip will affect how long it takes to process)
 
 ## Preston Blair phoneme series
 To be able to generate facial animations you need to create 10 different mouth poses based on the Preston Blair phoneme series.
@@ -49,6 +49,6 @@ To be able to generate facial animations you need to create 10 different mouth p
 2. Click *Save pose* and choose which path you want to save the pose file to.
 
 ## How to load a pose
-1. Click *Load pose* and select which pose you wish to load.
-2. The saved pose will be applied to the rig controllers referenced in the pose file.
+1. Click *Load pose* and select which pose file you wish to load.
+2. The stored pose will be applied to the rig controllers referenced in the pose file.
 
