@@ -150,6 +150,7 @@ class LipSyncDialog(QtWidgets.QDialog):
         self.save_pose_button = QtWidgets.QPushButton("Save pose")
         self.help_button = QtWidgets.QPushButton("?")
         self.help_button.setFixedWidth(25)
+        self.help_button.setToolTip("Open the README web page")
         self.load_pose_button = QtWidgets.QPushButton("Load pose")
         self.close_button = QtWidgets.QPushButton("Close")
 
