@@ -30,7 +30,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 try:
     import textgrid
 except ImportError:
-    confirm = cmds.confirmDialog(title="Missing dependencies", message="To be able to run this tool you need to download the required dependencies. Do you want to download the Depencies.zip (54 MB)?", button=["Yes","Cancel"], defaultButton="Yes", cancelButton="Cancel", dismissString="Cancel")
+    confirm = cmds.confirmDialog(title="Missing dependencies", message="To be able to run this tool you need to download the required dependencies. Do you want go to the download page?", button=["Yes","Cancel"], defaultButton="Yes", cancelButton="Cancel", dismissString="Cancel")
     if confirm == "Yes":
         webbrowser.open_new("https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0")
     else:
