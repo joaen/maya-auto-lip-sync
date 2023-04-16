@@ -6,7 +6,7 @@
 
 ## Installation:
 1. Add the ***auto_lip_sync*** folder or ***auto_lip_sync.py*** to your Maya scripts folder (Username\Documents\maya\*version*\scripts).
-2. Download the dependencies needed to run this tool (Download the [Dependencies.zip](https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0) or read the *Dependencies* section further down).
+2. Install the dependencies needed to run this tool. (Read the *Dependencies* section further down).
 3. To start the auto lipsync tool in Maya simply execute the following lines of code in the script editor or add them as a shelf button:
 
 ```python
