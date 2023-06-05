@@ -20,6 +20,7 @@ import sys
 import json
 import subprocess
 import webbrowser
+import traceback
 
 from maya import OpenMaya, OpenMayaUI, mel, cmds
 from shiboken2 import wrapInstance
@@ -30,9 +31,10 @@ from PySide2 import QtCore, QtGui, QtWidgets
 try:
     import textgrid
 except ImportError:
+    traceback.print_exc()
     confirm = cmds.confirmDialog(title="Missing dependencies", message="To be able to run this tool you need to download the required dependencies. Do you want go to the download page?", button=["Yes","Cancel"], defaultButton="Yes", cancelButton="Cancel", dismissString="Cancel")
     if confirm == "Yes":
-        webbrowser.open_new("https://github.com/joaen/maya_auto_lip_sync/releases/tag/v1.0.0")
+        webbrowser.open_new("https://github.com/joaen/maya-auto-lip-sync#dependencies")
     else:
         pass
 
@@ -69,10 +71,22 @@ class PoseConnectWidget(QtWidgets.QWidget):
 class LipSyncDialog(QtWidgets.QDialog):
 
     WINDOW_TITLE = "Auto lip sync"
+
     USER_SCRIPT_DIR = cmds.internalVar(userScriptDir=True)
     OUTPUT_FOLDER_PATH = USER_SCRIPT_DIR+"output"
     INPUT_FOLDER_PATH = USER_SCRIPT_DIR+"input"
+    
     MFA_PATH = USER_SCRIPT_DIR+"montreal-forced-aligner/bin"
+    if os.path.exists(MFA_PATH) == False:
+        cmds.confirmDialog(title="Path doesn't exsist!", message="This path doesn't exsist: "+MFA_PATH)
+    
+    LANGUAGE_PATH = USER_SCRIPT_DIR+"montreal-forced-aligner/pretrained_models/english.zip"
+    if os.path.exists(LANGUAGE_PATH) == False:
+        cmds.confirmDialog(title="Path doesn't exsist!", message="This path doesn't exsist: "+LANGUAGE_PATH)
+    
+    LEXICON_PATH = USER_SCRIPT_DIR+"librispeech-lexicon.txt"
+    if os.path.exists(LEXICON_PATH) == False:
+        cmds.confirmDialog(title="Path doesn't exsist!", message="This path doesn't exsist: "+LEXICON_PATH)
 
     sound_clip_path = ""
     text_file_path = ""
@@ -143,6 +157,8 @@ class LipSyncDialog(QtWidgets.QDialog):
         self.pose_filepath_line = QtWidgets.QLineEdit()
         self.pose_filepath_button = QtWidgets.QPushButton()
         self.pose_filepath_button.setIcon(QtGui.QIcon(":fileOpen.png"))
+        self.pose_refresh_button = QtWidgets.QPushButton()
+        self.pose_refresh_button.setIcon(QtGui.QIcon(":refresh.png"))
         self.pose_filepath_line.setText(self.pose_folder_path)
 
         self.generate_keys_button = QtWidgets.QPushButton("Generate keyframes")
@@ -173,7 +189,8 @@ class LipSyncDialog(QtWidgets.QDialog):
         pose_input_row.addWidget(self.pose_folder_label)
         pose_input_row.addWidget(self.pose_filepath_line)
         pose_input_row.addWidget(self.pose_filepath_button)
-
+        pose_input_row.addWidget(self.pose_refresh_button)
+        
         pose_buttons_row = QtWidgets.QHBoxLayout()
         pose_buttons_row.addWidget(self.load_pose_button)
         pose_buttons_row.addWidget(self.save_pose_button)
@@ -182,7 +199,6 @@ class LipSyncDialog(QtWidgets.QDialog):
         bottom_buttons_row.addWidget(self.generate_keys_button)
         bottom_buttons_row.addWidget(self.close_button)
         bottom_buttons_row.addWidget(self.help_button)
-
 
         # Add connection between pose file and phoneme
         pose_widget_layout = QtWidgets.QVBoxLayout()
@@ -209,6 +225,7 @@ class LipSyncDialog(QtWidgets.QDialog):
         self.pose_filepath_button.clicked.connect(self.pose_folder_dialog)
         self.save_pose_button.clicked.connect(self.save_pose_dialog)
         self.load_pose_button.clicked.connect(self.load_pose_dialog)
+        self.pose_refresh_button.clicked.connect(self.refresh_pose_widgets)
         self.close_button.clicked.connect(self.close_window)
         self.generate_keys_button.clicked.connect(self.generate_animation)
         self.help_button.clicked.connect(self.open_readme)
@@ -246,10 +263,12 @@ class LipSyncDialog(QtWidgets.QDialog):
 
     def find_textgrid_file(self):
         path = self.OUTPUT_FOLDER_PATH
-        textgrid_files = [os.path.join(dirpath, f)
-            for dirpath, dirnames, files in os.walk(path)
-            for f in files if f.endswith(".TextGrid")]
-        return textgrid_files[0]
+        textgrid_file = ""
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                if file.endswith(".TextGrid"):
+                    textgrid_file = root+"/"+file
+        return textgrid_file
 
     def open_readme(self):
         webbrowser.open_new("https://github.com/joaen/maya_auto_lip_sync/blob/main/README.md")
@@ -260,7 +279,6 @@ class LipSyncDialog(QtWidgets.QDialog):
         p_dialog = QtWidgets.QProgressDialog("Analyzing the input data and generating keyframes...", "Cancel", 0, number_of_operations, self)
         p_dialog.setWindowFlags(p_dialog.windowFlags() ^ QtCore.Qt.WindowCloseButtonHint)
         p_dialog.setWindowFlags(p_dialog.windowFlags() ^ QtCore.Qt.WindowContextHelpButtonHint)
-        p_dialog.setCancelButton(None)
         p_dialog.setWindowTitle("Progress...")
         p_dialog.setValue(0)
         p_dialog.setWindowModality(QtCore.Qt.WindowModal)
@@ -274,18 +292,23 @@ class LipSyncDialog(QtWidgets.QDialog):
         try:
             self.import_sound()
         except:
+            traceback.print_exc()
             cmds.warning("Could not import sound file.")
         p_dialog.setValue(current_operation + 1)
 
         # Run force aligner
         p = subprocess.Popen(
             ["cmd.exe",
-            "/c", "cd {} & mfa_align.exe {} ../librispeech-lexicon.txt ../pretrained_models/english.zip {}".format(self.MFA_PATH, self.INPUT_FOLDER_PATH, self.OUTPUT_FOLDER_PATH)]
+            "/c", "cd {} & mfa_align.exe {} {} {} {}".format(self.MFA_PATH, self.INPUT_FOLDER_PATH, self.LEXICON_PATH, self.LANGUAGE_PATH, self.OUTPUT_FOLDER_PATH)]
             , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        for line in iter(p.stdout.readline, ""):
-            print(line)
+        
+        for output_line in iter(p.stdout.readline, ""):
+            print(output_line)
             current_operation += 1
             p_dialog.setValue(current_operation)
+
+        for error_line in iter(p.stderr.readline, ""):
+            print(error_line)
         p.wait()
 
         try:
@@ -294,6 +317,7 @@ class LipSyncDialog(QtWidgets.QDialog):
             p_dialog.setValue(number_of_operations)
             p_dialog.close()
         except:
+            traceback.print_exc()
             p_dialog.setValue(number_of_operations)
             p_dialog.close()
             OpenMaya.MGlobal_displayError("Could not generate keys: Make sure your input data and poses are correctly set-up.")
@@ -347,7 +371,6 @@ class LipSyncDialog(QtWidgets.QDialog):
                 min_time = str(tg[1][i].minTime)
                 max_time = str(tg[1][i].maxTime)
                 phone = tg[1][i].mark
-
 
                 # Get the phone pose paths from the dict and load the correlated pose 
                 key_value = self.phone_dict.get(phone)
