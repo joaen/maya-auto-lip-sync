@@ -40,6 +40,8 @@ echo EXTRACTING ZIP FILE ...
 echo:
 powershell -command "Expand-Archive -Path montreal-forced-aligner.zip"
 powershell -command "Remove-Item montreal-forced-aligner.zip"
+robocopy "montreal-forced-aligner\montreal-forced-aligner" "montreal-forced-aligner" /E /MOVE
+
 goto end
 
 :fail

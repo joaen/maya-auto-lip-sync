@@ -42,7 +42,7 @@ https://www.openslr.org/resources/11/librispeech-lexicon.txt
 ## Preston Blair phoneme series
 To be able to generate facial animations you need to create 10 different mouth poses based on the Preston Blair phoneme series.
 
-![](https://github.com/joaen/joaen.github.io/blob/main/images/PrestonBlairPhonemes.png)
+![](https://i.imgur.com/vpm7DEr.jpg)
 
 ## How to save a pose
 1. Select the rig controllers you wish to save the attributes from.
