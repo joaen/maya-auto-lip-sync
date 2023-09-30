@@ -72,7 +72,7 @@ class PoseConnectWidget(QtWidgets.QWidget):
 class LipSyncDialog(QtWidgets.QDialog):
 
     WINDOW_TITLE = "Auto lip sync"
-    PYHTHON_VERSION = float(re.search(r'\d+\.\d+', sys.version).group())
+    PYTHON_VERSION = float(re.search(r'\d+\.\d+', sys.version).group())
 
     USER_SCRIPT_DIR = cmds.internalVar(userScriptDir=True)
     OUTPUT_FOLDER_PATH = USER_SCRIPT_DIR+"output"
@@ -410,7 +410,7 @@ class LipSyncDialog(QtWidgets.QDialog):
         pose_data = json.load(open(file_path))
         self.active_controls = []
 
-        if self.PYHTHON_VERSION < 3:
+        if self.PYTHON_VERSION < 3:
             for ctrl, input in pose_data.iteritems():
                 for attr, value in input.iteritems():
                     cmds.setAttr(ctrl+"."+attr, value)
