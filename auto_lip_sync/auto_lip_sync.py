@@ -21,6 +21,7 @@ import json
 import subprocess
 import webbrowser
 import traceback
+import re
 
 from maya import OpenMaya, OpenMayaUI, mel, cmds
 from shiboken2 import wrapInstance
@@ -71,6 +72,7 @@ class PoseConnectWidget(QtWidgets.QWidget):
 class LipSyncDialog(QtWidgets.QDialog):
 
     WINDOW_TITLE = "Auto lip sync"
+    PYHTHON_VERSION = float(re.search(r'\d+\.\d+', sys.version).group())
 
     USER_SCRIPT_DIR = cmds.internalVar(userScriptDir=True)
     OUTPUT_FOLDER_PATH = USER_SCRIPT_DIR+"output"
@@ -297,19 +299,24 @@ class LipSyncDialog(QtWidgets.QDialog):
         p_dialog.setValue(current_operation + 1)
 
         # Run force aligner
-        p = subprocess.Popen(
+        process = subprocess.Popen(
             ["cmd.exe",
             "/c", "cd {} & mfa_align.exe {} {} {} {}".format(self.MFA_PATH, self.INPUT_FOLDER_PATH, self.LEXICON_PATH, self.LANGUAGE_PATH, self.OUTPUT_FOLDER_PATH)]
             , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         
-        for output_line in iter(p.stdout.readline, ""):
-            print(output_line)
-            current_operation += 1
-            p_dialog.setValue(current_operation)
+        for line in process.stdout:
+            if line.strip():
+                current_operation += 1
+                p_dialog.setValue(current_operation)
+                print(line, end="")
+                print("")
 
-        for error_line in iter(p.stderr.readline, ""):
-            print(error_line)
-        p.wait()
+        for line in process.stderr:
+            if line.strip():
+                print(line, end="")
+                print("")
+    
+        process.wait()
 
         try:
             self.create_keyframes()
@@ -320,7 +327,6 @@ class LipSyncDialog(QtWidgets.QDialog):
             traceback.print_exc()
             p_dialog.setValue(number_of_operations)
             p_dialog.close()
-            OpenMaya.MGlobal_displayError("Could not generate keys: Make sure your input data and poses are correctly set-up.")
         
         self.delete_input_folder()
 
@@ -403,10 +409,17 @@ class LipSyncDialog(QtWidgets.QDialog):
     def load_pose(self, file_path):
         pose_data = json.load(open(file_path))
         self.active_controls = []
-        for ctrl, input in pose_data.iteritems():
-            for attr, value in input.iteritems():
-                cmds.setAttr(ctrl+"."+attr, value)
-            self.active_controls.append(ctrl)
+
+        if self.PYHTHON_VERSION < 3:
+            for ctrl, input in pose_data.iteritems():
+                for attr, value in input.iteritems():
+                    cmds.setAttr(ctrl+"."+attr, value)
+                self.active_controls.append(ctrl)
+        else:
+            for ctrl, input in pose_data.items():
+                for attr, value in input.items():
+                    cmds.setAttr(ctrl+"."+attr, value)
+                self.active_controls.append(ctrl)
 
     def get_pose_paths(self):
         pose_list = []
