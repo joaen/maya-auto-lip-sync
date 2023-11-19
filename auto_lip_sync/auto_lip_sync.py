@@ -96,16 +96,16 @@ class LipSyncDialog(QtWidgets.QDialog):
     active_controls = []
 
     phone_dict = {
-        "AA0": "AI", "AA1": "AI", "AA2": "AI", "AE0": "AI", "AE1": "AI", "AE2": "AI",
+        "AA0": "AI", "AA1": "AI", "AA2": "AI", "AE0": "AI", "AE1": "AI", "AE2": "AI", 
         "AH0": "AI", "AH1": "AI", "AH2": "AI", "AO0": "AI", "AO1": "AI", "AO2": "AI",
-        "AW0": "AI", "AW1": "AI", "AW2": "AI", "AY0": "AI", "AY1": "AI", "AY2": "AI",
+        "AW0": "WQ", "AW1": "WQ", "AW2": "WQ", "AY0": "AI", "AY1": "AI", "AY2": "AI",
         "EH0": "E", "EH1": "E", "EH2": "E", "ER0": "O", "ER1": "O", "ER2": "O", "EY0": "E",
         "EY1": "E", "EY2": "E", "IH0": "AI", "IH1": "AI", "IH2": "AI", "IY0": "E", "IY1": "E",
         "IY2": "E", "OW0": "O", "OW1": "O", "OW2": "O", "OY0": "O", "OY1": "O", "OY2": "O",
-        "UH0": "O", "UH1": "O", "UH2": "O", "UW0": "O", "UW1": "O", "UW2": "O", "B": "MBP",
+        "UH0": "U", "UH1": "U", "UH2": "U", "UW0": "U", "UW1": "U", "UW2": "U", "B": "MBP",
         "CH": "etc", "D": "etc", "DH": "etc", "F": "FV", "G": "etc", "HH": "E", "JH": "E",
         "K": "etc", "L": "L", "M": "MBP", "N": "etc", "NG": "etc", "P": "MBP", "R": "etc",
-        "S": "etc", "SH": "etc", "T": "etc", "TH": "etc", "V": "FV", "W": "etc", "Y": "E",
+        "S": "etc", "SH": "etc", "T": "etc", "TH": "etc", "V": "FV", "W": "WQ", "Y": "E",
         "Z": "E", "ZH": "etc", "sil": "rest", "None": "rest", "sp": "rest", "spn": "rest", "": "rest"
     }
 
